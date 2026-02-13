@@ -8,35 +8,35 @@ models:
       schema: pbdb_analytics
     columns:
       # Primary identifiers
+      - name: collection_id
+        description: "Collection identifier (from cid)"
       - name: occurrence_id
         description: "Unique occurrence identifier (from oid)"
         tests:
           - unique
           - not_null
-      - name: collection_id
-        description: "Collection identifier (from cid)"
       - name: reference_id
         description: "Reference identifier (from rid)"
 
       # Taxonomic information
-      - name: taxon_name
-        description: "Accepted taxonomic name (from tna)"
-      - name: taxon_id
-        description: "Taxon identifier (from tid)"
-      - name: taxonomic_rank
-        description: "Taxonomic rank (from rnk)"
       - name: identified_name
         description: "Identified name (from idn)"
+      - name: taxon_id
+        description: "Taxon identifier (from tid)"
+      - name: taxon_name
+        description: "Accepted taxonomic name (from tna)"
       - name: taxonomic_difference_flag
         description: "Taxonomic difference flag (from tdf)"
+      - name: taxonomic_rank
+        description: "Taxonomic rank (from rnk)"
 
       # Temporal information
+      - name: early_age_ma
+        description: "Early age in millions of years (from eag)"
       - name: early_interval
         description: "Early interval name (from oei)"
       - name: interval_id
         description: "Interval identifier (from iid)"
-      - name: early_age_ma
-        description: "Early age in millions of years (from eag)"
       - name: latest_age_ma
         description: "Latest age in millions of years (from lag)"
       - name: midpoint_age_ma
