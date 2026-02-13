@@ -13,21 +13,21 @@ with source_data as (
 renamed as (
     select
         -- Primary identifiers
-        oid as occurrence_id,
         cid as collection_id,
+        oid as occurrence_id,
         rid as reference_id,
 
         -- Taxonomic information
-        tna as taxon_name,
-        tid as taxon_id,
-        rnk as taxonomic_rank,
         idn as identified_name,
+        tid as taxon_id,
+        tna as taxon_name,
         tdf as taxonomic_difference_flag,
+        rnk as taxonomic_rank,
 
         -- Temporal information
+        eag as early_age_ma,
         oei as early_interval,
         iid as interval_id,
-        eag as early_age_ma,
         lag as latest_age_ma,
         case
             when eag is not null and lag is not null
