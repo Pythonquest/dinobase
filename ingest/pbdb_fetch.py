@@ -27,16 +27,45 @@ PBDB_API_BASE = "https://paleobiodb.org/data1.2"
 PROJECT_ID = os.getenv('GCP_PROJECT_ID', 'Dinobase-Project')
 DATASET_ID = 'pbdb_raw'
 LOCATION = 'US'
+CREDENTIALS_PATH = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
 
 class PBDBFetcher:
     """Fetches data from PBDB API and loads into BigQuery."""
     
-    def __init__(self, project_id: str = PROJECT_ID, dataset_id: str = DATASET_ID):
-        """Initialize the fetcher with BigQuery client."""
-        self.project_id = project_id
+    def __init__(self, project_id: str = PROJECT_ID, dataset_id: str = DATASET_ID, credentials_path: Optional[str] = None):
+        """
+        Initialize the fetcher with BigQuery client.
+        
+        Args:
+            project_id: GCP project ID (if not provided and credentials file exists, will be extracted from credentials)
+            dataset_id: BigQuery dataset ID
+            credentials_path: Path to service account JSON key file (optional, uses GOOGLE_APPLICATION_CREDENTIALS env var if not provided)
+        """
         self.dataset_id = dataset_id
-        self.client = bigquery.Client(project=project_id)
+        
+        # Load credentials from service account file if provided
+        credentials = None
+        creds_path = credentials_path or CREDENTIALS_PATH
+        if creds_path:
+            if not os.path.exists(creds_path):
+                raise FileNotFoundError(f"Credentials file not found: {creds_path}")
+            logger.info(f"Loading credentials from: {creds_path}")
+            
+            # Load credentials and extract project_id from file if not explicitly provided
+            with open(creds_path, 'r') as f:
+                creds_data = json.load(f)
+                if project_id == PROJECT_ID and 'project_id' in creds_data:
+                    project_id = creds_data['project_id']
+                    logger.info(f"Using project_id from credentials file: {project_id}")
+            
+            credentials = service_account.Credentials.from_service_account_file(
+                creds_path,
+                scopes=['https://www.googleapis.com/auth/bigquery']
+            )
+        
+        self.project_id = project_id
+        self.client = bigquery.Client(project=project_id, credentials=credentials)
         self._ensure_dataset_exists()
     
     def _ensure_dataset_exists(self):
@@ -78,6 +107,20 @@ class PBDBFetcher:
         
         logger.info(f"Fetching occurrences from PBDB API: {params}")
         response = requests.get(url, params=params)
+        
+        if not response.ok:
+            error_msg = f"API request failed with status {response.status_code}"
+            try:
+                error_data = response.json()
+                if 'warnings' in error_data:
+                    logger.warning(f"API warnings: {error_data['warnings']}")
+                if 'errors' in error_data:
+                    logger.error(f"API errors: {error_data['errors']}")
+                    error_msg += f": {error_data['errors']}"
+            except:
+                error_msg += f": {response.text[:500]}"
+            raise requests.exceptions.HTTPError(error_msg, response=response)
+        
         response.raise_for_status()
         
         data = response.json()
@@ -150,11 +193,13 @@ def main():
     
     # Example: Fetch and load occurrences
     # Adjust parameters as needed
+    # Note: PBDB API requires at least one filter parameter - using 'all_records' to fetch all
     fetcher.fetch_and_load_occurrences(
         table_id='occurrences',
         limit=1000,
         offset=0,
-        write_disposition='WRITE_APPEND'
+        write_disposition='WRITE_APPEND',
+        all_records=True
     )
     
     logger.info("Data fetch and load completed")
