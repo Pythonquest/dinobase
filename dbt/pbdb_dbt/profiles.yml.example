@@ -1,0 +1,27 @@
+# Copy this file to ~/.dbt/profiles.yml (or %USERPROFILE%\.dbt\profiles.yml on Windows)
+# DO NOT commit profiles.yml to version control
+
+pbdb_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('GCP_PROJECT_ID', 'Dinobase-Project') }}"
+      dataset: pbdb_analytics
+      location: US
+      priority: interactive
+      maximum_bytes_billed: 1000000000  # 1GB limit for development
+      timeout_seconds: 300
+      job_retry_deadline_seconds: 600
+      
+    prod:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('GCP_PROJECT_ID', 'Dinobase-Project') }}"
+      dataset: pbdb_analytics
+      location: US
+      priority: batch
+      maximum_bytes_billed: 100000000000  # 100GB limit for production
+      timeout_seconds: 300
+      job_retry_deadline_seconds: 600

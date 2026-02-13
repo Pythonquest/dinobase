@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: pbdb_raw
+    description: "Raw, minimally transformed data loaded into BigQuery"
+    database: "{{ var('project_id') }}"
+    schema: pbdb_raw
+    tables:
+      # Add your raw tables here as they are created
+      # Example:
+      # - name: occurrences
+      #   description: "Raw occurrence data from PBDB"
+      #   columns:
+      #     - name: occurrence_no
+      #       description: "Unique occurrence identifier"
+      #       tests:
+      #         - unique
+      #         - not_null

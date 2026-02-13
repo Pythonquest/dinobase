@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: example_model
+    description: "Example dbt model - replace with your actual models"
+    config:
+      materialized: view
+      schema: pbdb_analytics
+    columns:
+      - name: id
+        description: "Example column"
+        tests:
+          - unique
+          - not_null

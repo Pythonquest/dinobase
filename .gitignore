@@ -1,0 +1,53 @@
+# dbt
+dbt/**/target/
+dbt/**/dbt_packages/
+dbt/**/logs/
+*.log
+
+# dbt profiles (should not be committed)
+dbt/**/profiles.yml
+**/profiles.yml
+!dbt/**/profiles.yml.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/.terraform.lock.hcl
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.backup
+infra/terraform/.terraform.tfstate.lock.info
+
+# GCP credentials
+*.json
+!package*.json
+!tsconfig*.json
+service-account*.json

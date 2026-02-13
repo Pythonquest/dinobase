@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: _staging__sources
+    description: "Staging models that reference raw data from pbdb_raw dataset"
+    config:
+      materialized: view
+      schema: pbdb_analytics
