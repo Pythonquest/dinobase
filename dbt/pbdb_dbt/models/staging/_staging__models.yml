@@ -7,26 +7,49 @@ models:
       materialized: view
       schema: pbdb_analytics
     columns:
-      - name: occurrence_no
-        description: "Unique occurrence identifier"
+      # Primary identifiers
+      - name: occurrence_id
+        description: "Unique occurrence identifier (from oid)"
         tests:
           - unique
           - not_null
-      - name: collection_no
-        description: "Collection number"
-      - name: accepted_name
-        description: "Accepted taxonomic name"
-      - name: genus
-        description: "Genus name"
-      - name: species
-        description: "Species name"
-      - name: midpoint_ma
-        description: "Midpoint age in millions of years"
-      - name: longitude
-        description: "Longitude coordinate"
-      - name: latitude
-        description: "Latitude coordinate"
-      - name: country
-        description: "Country name"
-      - name: environment
-        description: "Environment type"
+      - name: collection_id
+        description: "Collection identifier (from cid)"
+      - name: reference_id
+        description: "Reference identifier (from rid)"
+
+      # Taxonomic information
+      - name: taxon_name
+        description: "Accepted taxonomic name (from tna)"
+      - name: taxon_id
+        description: "Taxon identifier (from tid)"
+      - name: taxonomic_rank
+        description: "Taxonomic rank (from rnk)"
+      - name: identified_name
+        description: "Identified name (from idn)"
+      - name: taxonomic_difference_flag
+        description: "Taxonomic difference flag (from tdf)"
+
+      # Temporal information
+      - name: early_interval
+        description: "Early interval name (from oei)"
+      - name: interval_id
+        description: "Interval identifier (from iid)"
+      - name: early_age_ma
+        description: "Early age in millions of years (from eag)"
+      - name: latest_age_ma
+        description: "Latest age in millions of years (from lag)"
+      - name: midpoint_age_ma
+        description: "Midpoint age in millions of years, calculated as (early_age_ma + latest_age_ma) / 2"
+
+      # Geographic information
+      - name: original_location_identifier
+        description: "Original location identifier (from oli)"
+
+      # Data quality
+      - name: record_flags
+        description: "Record flags (from flg)"
+
+      # dbt metadata
+      - name: _dbt_loaded_at
+        description: "Timestamp when the record was loaded by dbt"
