@@ -29,17 +29,17 @@ renamed as (
         oei as early_interval,
         iid as interval_id,
         lag as latest_age_ma,
-        case
-            when eag is not null and lag is not null
-            then (eag + lag) / 2.0
-            else coalesce(eag, lag)
-        end as midpoint_age_ma,
-
-        -- Geographic information
         oli as original_location_identifier,
 
-        -- Data quality
+        -- Geographic information
         flg as record_flags,
+
+        -- Data quality
+        case
+            when eag is not null and lag is not null
+                then (eag + lag) / 2.0
+            else coalesce(eag, lag)
+        end as midpoint_age_ma,
 
         -- dbt metadata
         current_timestamp() as _dbt_loaded_at
