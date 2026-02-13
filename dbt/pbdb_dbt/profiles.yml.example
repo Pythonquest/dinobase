@@ -7,7 +7,7 @@ pbdb_dbt:
     dev:
       type: bigquery
       method: oauth
-      project: "{{ env_var('GCP_PROJECT_ID', 'Dinobase-Project') }}"
+      project: "{{ env_var('GCP_PROJECT_ID', 'dinobase-project') }}"
       dataset: pbdb_analytics
       location: US
       priority: interactive
@@ -18,7 +18,7 @@ pbdb_dbt:
     prod:
       type: bigquery
       method: oauth
-      project: "{{ env_var('GCP_PROJECT_ID', 'Dinobase-Project') }}"
+      project: "{{ env_var('GCP_PROJECT_ID', 'dinobase-project') }}"
       dataset: pbdb_analytics
       location: US
       priority: batch

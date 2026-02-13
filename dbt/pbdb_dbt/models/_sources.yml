@@ -2,17 +2,47 @@ version: 2
 
 sources:
   - name: pbdb_raw
-    description: "Raw, minimally transformed data loaded into BigQuery"
+    description: "Raw, minimally transformed data loaded into BigQuery from PBDB API"
     database: "{{ var('project_id') }}"
     schema: pbdb_raw
     tables:
-      # Add your raw tables here as they are created
-      # Example:
-      # - name: occurrences
-      #   description: "Raw occurrence data from PBDB"
-      #   columns:
-      #     - name: occurrence_no
-      #       description: "Unique occurrence identifier"
-      #       tests:
-      #         - unique
-      #         - not_null
+      - name: occurrences
+        description: "Raw occurrence data from PBDB API"
+        columns:
+          - name: occurrence_no
+            description: "Unique occurrence identifier"
+            tests:
+              - unique
+              - not_null
+          - name: collection_no
+            description: "Collection number"
+          - name: identified_name
+            description: "Identified name"
+          - name: identified_rank
+            description: "Taxonomic rank"
+          - name: acct_name
+            description: "Accepted name"
+          - name: genus
+            description: "Genus name"
+          - name: species
+            description: "Species name"
+          - name: early_interval
+            description: "Early geologic interval"
+          - name: late_interval
+            description: "Late geologic interval"
+          - name: max_ma
+            description: "Maximum age in millions of years"
+          - name: min_ma
+            description: "Minimum age in millions of years"
+          - name: lng
+            description: "Longitude"
+          - name: lat
+            description: "Latitude"
+          - name: country
+            description: "Country"
+          - name: state
+            description: "State/Province"
+          - name: formation
+            description: "Formation name"
+          - name: environment
+            description: "Environment type"

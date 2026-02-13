@@ -1,8 +1,32 @@
 version: 2
 
 models:
-  - name: _staging__sources
-    description: "Staging models that reference raw data from pbdb_raw dataset"
+  - name: stg_occurrences
+    description: "Staging model for PBDB occurrence data, cleaned and standardized from pbdb_raw.occurrences"
     config:
       materialized: view
       schema: pbdb_analytics
+    columns:
+      - name: occurrence_no
+        description: "Unique occurrence identifier"
+        tests:
+          - unique
+          - not_null
+      - name: collection_no
+        description: "Collection number"
+      - name: accepted_name
+        description: "Accepted taxonomic name"
+      - name: genus
+        description: "Genus name"
+      - name: species
+        description: "Species name"
+      - name: midpoint_ma
+        description: "Midpoint age in millions of years"
+      - name: longitude
+        description: "Longitude coordinate"
+      - name: latitude
+        description: "Latitude coordinate"
+      - name: country
+        description: "Country name"
+      - name: environment
+        description: "Environment type"

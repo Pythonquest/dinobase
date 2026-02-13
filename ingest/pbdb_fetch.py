@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 PBDB_API_BASE = "https://paleobiodb.org/data1.2"
 
 # BigQuery configuration
-PROJECT_ID = os.getenv('GCP_PROJECT_ID', 'Dinobase-Project')
+PROJECT_ID = os.getenv('GCP_PROJECT_ID', 'dinobase-project')
 DATASET_ID = 'pbdb_raw'
 LOCATION = 'US'
 CREDENTIALS_PATH = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')

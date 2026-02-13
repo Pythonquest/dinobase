@@ -24,11 +24,9 @@ models:
     staging:
       +materialized: view
       +schema: pbdb_analytics
-      +database: "{{ var('project_id') }}"
     marts:
       +materialized: table
       +schema: pbdb_analytics
-      +database: "{{ var('project_id') }}"
 
 vars:
-  project_id: "Dinobase-Project"  # GCP project ID
+  project_id: "dinobase-project-487317"  # GCP project ID
