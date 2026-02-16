@@ -1,5 +1,14 @@
 # PBDB Pipeline
 
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt_Core-1.8-FF694B?logo=dbt&logoColor=white)
+![BigQuery](https://img.shields.io/badge/BigQuery-4285F4?logo=googlebigquery&logoColor=white)
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?logo=googlecloud&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white)
+![SQLFluff](https://img.shields.io/badge/SQLFluff-bigquery-4051B5)
+![Black](https://img.shields.io/badge/code_style-black-000000)
+
 A data pipeline for fetching, loading, and transforming Paleobiology Database (PBDB) data using BigQuery and dbt.
 
 ## Architecture
