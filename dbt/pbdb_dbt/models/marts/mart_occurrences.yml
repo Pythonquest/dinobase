@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: mart_occurrences
+    description: "Mart model for PBDB occurrence data, enriched with calculated fields from stg_occurrences"
+    columns:
+      # Primary identifiers
+      - name: collection_id
+        description: "Collection identifier"
+      - name: occurrence_id
+        description: "Unique occurrence identifier"
+        tests:
+          - unique
+          - not_null
+      - name: reference_id
+        description: "Reference identifier"
+
+      # Taxonomic information
+      - name: identified_name
+        description: "Identified name"
+      - name: taxon_id
+        description: "Taxon identifier"
+      - name: taxon_name
+        description: "Accepted taxonomic name"
+      - name: taxonomic_difference_flag
+        description: "Taxonomic difference flag"
+      - name: taxonomic_rank
+        description: "Taxonomic rank"
+
+      # Temporal information
+      - name: early_age_ma
+        description: "Early age in millions of years"
+      - name: early_interval
+        description: "Early interval name"
+      - name: interval_id
+        description: "Interval identifier"
+      - name: latest_age_ma
+        description: "Latest age in millions of years"
+      - name: midpoint_age_ma
+        description: "Midpoint age in millions of years, calculated as (early_age_ma + latest_age_ma) / 2. Falls back to whichever value is available if one is null."
+
+      # Geographic information
+      - name: original_location_identifier
+        description: "Original location identifier"
+
+      # Data quality
+      - name: record_flags
+        description: "Record flags"
+
+      # dbt metadata
+      - name: _dbt_loaded_at
+        description: "Timestamp when the record was loaded by dbt"

@@ -1,10 +1,3 @@
-{{
-    config(
-        materialized='view',
-        schema='pbdb_analytics'
-    )
-}}
-
 with source_data as (
     select *
     from {{ source('pbdb_raw', 'occurrences') }}
@@ -33,13 +26,6 @@ renamed as (
 
         -- Geographic information
         flg as record_flags,
-
-        -- Data quality
-        case
-            when eag is not null and lag is not null
-                then (eag + lag) / 2.0
-            else coalesce(eag, lag)
-        end as midpoint_age_ma,
 
         -- dbt metadata
         current_timestamp() as _dbt_loaded_at

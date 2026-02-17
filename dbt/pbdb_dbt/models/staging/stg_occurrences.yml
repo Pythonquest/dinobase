@@ -3,9 +3,6 @@ version: 2
 models:
   - name: stg_occurrences
     description: "Staging model for PBDB occurrence data, cleaned and standardized from pbdb_raw.occurrences"
-    config:
-      materialized: view
-      schema: pbdb_analytics
     columns:
       # Primary identifiers
       - name: collection_id
@@ -39,9 +36,6 @@ models:
         description: "Interval identifier (from iid)"
       - name: latest_age_ma
         description: "Latest age in millions of years (from lag)"
-      - name: midpoint_age_ma
-        description: "Midpoint age in millions of years, calculated as (early_age_ma + latest_age_ma) / 2"
-
       # Geographic information
       - name: original_location_identifier
         description: "Original location identifier (from oli)"
