@@ -99,13 +99,23 @@ bq mk --dataset --location=US your-actual-project-id:pbdb_analytics
 
 ## Step 5: GitHub Actions (Optional)
 
-If using GitHub Actions CI/CD, add your project ID as a secret:
+If using GitHub Actions CI/CD, add these secrets:
 
 1. Go to your GitHub repository
 2. Settings → Secrets and variables → Actions
-3. Click "New repository secret"
-4. Name: `GCP_PROJECT_ID`
-5. Value: Your actual GCP project ID
+3. Click "New repository secret" and add each of the following:
+
+| Secret | Value | Required for |
+|--------|-------|--------------|
+| `GCP_PROJECT_ID` | Your GCP project ID (e.g. `dinobase-project-487317`) | All dbt CI jobs |
+| `GCP_SA_KEY` | Full contents of a service account JSON key file | `test-dbt` job only |
+
+**Creating the service account key for `GCP_SA_KEY`:**
+
+1. Go to [GCP Console](https://console.cloud.google.com/) → IAM & Admin → Service Accounts
+2. Create a service account (or use an existing one) with **BigQuery User** and **BigQuery Data Editor** roles
+3. Go to the Keys tab → Add Key → Create new key → JSON
+4. Paste the entire downloaded JSON file contents as the secret value
 
 ## Quick Reference: All Locations
 
@@ -115,7 +125,7 @@ If using GitHub Actions CI/CD, add your project ID as a secret:
 | `dbt/pbdb_dbt/profiles.yml.example` | 10, 21 | Fallback in `env_var()` |
 | `ingest/pbdb_fetch.py` | 27 | Default in `os.getenv()` |
 | `~/.dbt/profiles.yml` | 10, 21 | After copying from example |
-| GitHub Secrets | - | `GCP_PROJECT_ID` secret |
+| GitHub Secrets | - | `GCP_PROJECT_ID` and `GCP_SA_KEY` secrets |
 
 ## Notes
 
