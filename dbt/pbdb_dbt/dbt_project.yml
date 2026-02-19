@@ -27,6 +27,9 @@ models:
     staging:
       +materialized: view
       +schema: pbdb_analytics
+    intermediate:
+      +materialized: view
+      +schema: pbdb_analytics
     marts:
       +materialized: table
       +schema: pbdb_analytics

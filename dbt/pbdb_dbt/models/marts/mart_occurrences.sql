@@ -1,42 +1,67 @@
-with occurrences as (
-    select * from {{ ref('stg_occurrences') }}
-),
-
-enriched as (
-    select
-        -- Primary identifiers
-        collection_id,
-        occurrence_id,
-        reference_id,
-
-        -- Taxonomic information
-        identified_name,
-        taxon_id,
-        taxon_name,
-        taxonomic_difference_flag,
-        taxonomic_rank,
-
-        -- Temporal information
-        early_age_ma,
-        early_interval,
-        interval_id,
-        latest_age_ma,
-        original_location_identifier,
-
-        -- Calculated temporal fields
-        case
-            when early_age_ma is not null and latest_age_ma is not null
-                then (early_age_ma + latest_age_ma) / 2.0
-            else coalesce(early_age_ma, latest_age_ma)
-        end as midpoint_age_ma,
-
-        -- Data quality
-        record_flags,
-
-        -- dbt metadata
-        _dbt_loaded_at
-
-    from occurrences
+with enriched as (
+    select * from {{ ref('int_occurrences_enriched') }}
 )
 
-select * from enriched
+select
+    -- Primary identifiers
+    occurrence_id,
+    collection_id,
+    reference_id,
+
+    -- Taxonomic information
+    identified_name,
+    taxon_id,
+    taxon_name,
+    taxonomic_difference_flag,
+    taxonomic_rank,
+    phylum,
+    taxon_class,
+    taxon_order,
+    family,
+    genus,
+
+    -- Temporal information
+    early_age_ma,
+    early_interval,
+    late_interval,
+    latest_age_ma,
+    midpoint_age_ma,
+    interval_id,
+
+    -- First / last appearance
+    first_appearance_early_ma,
+    first_appearance_late_ma,
+    last_appearance_early_ma,
+    last_appearance_late_ma,
+
+    -- Modern coordinates
+    longitude,
+    latitude,
+
+    -- Paleocoordinates
+    paleo_longitude,
+    paleo_latitude,
+    paleo_model,
+    geoplate_id,
+
+    -- Location
+    collection_name,
+    country_code,
+    state_province,
+    county,
+
+    -- Stratigraphy
+    formation,
+    strat_group,
+    strat_member,
+
+    -- Environment
+    environment,
+
+    -- Data quality
+    record_flags,
+
+    -- Metadata
+    _dbt_loaded_at
+
+from enriched

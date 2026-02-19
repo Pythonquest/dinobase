@@ -81,33 +81,26 @@ class PBDBFetcher:
             dataset = self.client.create_dataset(dataset, exists_ok=True)
             logger.info(f"Created dataset {self.dataset_id}")
     
-    def fetch_occurrences(
+    def _fetch_from_api(
         self,
-        limit: int = 1000,
-        offset: int = 0,
-        **kwargs
+        endpoint: str,
+        params: Dict,
     ) -> List[Dict]:
         """
-        Fetch occurrence data from PBDB API.
-        
+        Fetch records from a PBDB API endpoint.
+
         Args:
-            limit: Maximum number of records to fetch
-            offset: Offset for pagination
-            **kwargs: Additional query parameters for PBDB API
-        
+            endpoint: API endpoint path (e.g. 'occs/list.json')
+            params: Query parameters for the API call
+
         Returns:
-            List of occurrence records
+            List of records from the API response
         """
-        url = f"{PBDB_API_BASE}/occs/list.json"
-        params = {
-            'limit': limit,
-            'offset': offset,
-            **kwargs
-        }
-        
-        logger.info(f"Fetching occurrences from PBDB API: {params}")
+        url = f"{PBDB_API_BASE}/{endpoint}"
+
+        logger.info(f"Fetching from PBDB API {endpoint}: {params}")
         response = requests.get(url, params=params)
-        
+
         if not response.ok:
             error_msg = f"API request failed with status {response.status_code}"
             try:
@@ -120,14 +113,93 @@ class PBDBFetcher:
             except:
                 error_msg += f": {response.text[:500]}"
             raise requests.exceptions.HTTPError(error_msg, response=response)
-        
-        response.raise_for_status()
-        
+
         data = response.json()
         records = data.get('records', [])
-        logger.info(f"Fetched {len(records)} occurrence records")
-        
+        logger.info(f"Fetched {len(records)} records from {endpoint}")
+
         return records
+
+    def fetch_occurrences(
+        self,
+        limit: int = 1000,
+        offset: int = 0,
+        show: str = 'coords,paleoloc',
+        **kwargs
+    ) -> List[Dict]:
+        """
+        Fetch occurrence data from PBDB API with coordinates and paleocoordinates.
+
+        Args:
+            limit: Maximum number of records to fetch
+            offset: Offset for pagination
+            show: Comma-separated list of additional data blocks to include
+            **kwargs: Additional query parameters for PBDB API
+
+        Returns:
+            List of occurrence records
+        """
+        params = {
+            'limit': limit,
+            'offset': offset,
+            'show': show,
+            **kwargs
+        }
+        return self._fetch_from_api('occs/list.json', params)
+
+    def fetch_collections(
+        self,
+        limit: int = 1000,
+        offset: int = 0,
+        show: str = 'coords,paleoloc,loc,strat,geo',
+        **kwargs
+    ) -> List[Dict]:
+        """
+        Fetch collection data from PBDB API with full geographic and geological context.
+
+        Args:
+            limit: Maximum number of records to fetch
+            offset: Offset for pagination
+            show: Comma-separated list of additional data blocks to include
+            **kwargs: Additional query parameters for PBDB API
+
+        Returns:
+            List of collection records
+        """
+        params = {
+            'limit': limit,
+            'offset': offset,
+            'show': show,
+            **kwargs
+        }
+        return self._fetch_from_api('colls/list.json', params)
+
+    def fetch_taxa(
+        self,
+        limit: int = 1000,
+        offset: int = 0,
+        show: str = 'app,classext',
+        **kwargs
+    ) -> List[Dict]:
+        """
+        Fetch taxonomic data from PBDB API with appearance times and classification hierarchy.
+
+        Args:
+            limit: Maximum number of records to fetch
+            offset: Offset for pagination
+            show: Comma-separated list of additional data blocks to include
+            **kwargs: Additional query parameters for PBDB API
+
+        Returns:
+            List of taxon records
+        """
+        params = {
+            'limit': limit,
+            'offset': offset,
+            'show': show,
+            **kwargs
+        }
+        return self._fetch_from_api('taxa/list.json', params)
     
     def load_to_bigquery(
         self,
@@ -175,7 +247,7 @@ class PBDBFetcher:
     ):
         """
         Fetch occurrences from PBDB API and load into BigQuery.
-        
+
         Args:
             table_id: BigQuery table name
             limit: Maximum records per API call
@@ -186,22 +258,77 @@ class PBDBFetcher:
         records = self.fetch_occurrences(limit=limit, offset=offset, **kwargs)
         self.load_to_bigquery(table_id, records, write_disposition)
 
+    def fetch_and_load_collections(
+        self,
+        table_id: str = 'collections',
+        limit: int = 1000,
+        offset: int = 0,
+        write_disposition: str = 'WRITE_APPEND',
+        **kwargs
+    ):
+        """
+        Fetch collections from PBDB API and load into BigQuery.
+
+        Args:
+            table_id: BigQuery table name
+            limit: Maximum records per API call
+            offset: Offset for pagination
+            write_disposition: BigQuery write disposition
+            **kwargs: Additional PBDB API parameters
+        """
+        records = self.fetch_collections(limit=limit, offset=offset, **kwargs)
+        self.load_to_bigquery(table_id, records, write_disposition)
+
+    def fetch_and_load_taxa(
+        self,
+        table_id: str = 'taxa',
+        limit: int = 1000,
+        offset: int = 0,
+        write_disposition: str = 'WRITE_APPEND',
+        **kwargs
+    ):
+        """
+        Fetch taxa from PBDB API and load into BigQuery.
+
+        Args:
+            table_id: BigQuery table name
+            limit: Maximum records per API call
+            offset: Offset for pagination
+            write_disposition: BigQuery write disposition
+            **kwargs: Additional PBDB API parameters
+        """
+        records = self.fetch_taxa(limit=limit, offset=offset, **kwargs)
+        self.load_to_bigquery(table_id, records, write_disposition)
+
 
 def main():
     """Main entry point for the script."""
     fetcher = PBDBFetcher()
-    
-    # Example: Fetch and load occurrences
-    # Adjust parameters as needed
-    # Note: PBDB API requires at least one filter parameter - using 'all_records' to fetch all
+
     fetcher.fetch_and_load_occurrences(
         table_id='occurrences',
         limit=1000,
         offset=0,
-        write_disposition='WRITE_APPEND',
+        write_disposition='WRITE_TRUNCATE',
         all_records=True
     )
-    
+
+    fetcher.fetch_and_load_collections(
+        table_id='collections',
+        limit=1000,
+        offset=0,
+        write_disposition='WRITE_TRUNCATE',
+        all_records=True
+    )
+
+    fetcher.fetch_and_load_taxa(
+        table_id='taxa',
+        limit=1000,
+        offset=0,
+        write_disposition='WRITE_TRUNCATE',
+        all_records=True
+    )
+
     logger.info("Data fetch and load completed")
 
 

@@ -2,47 +2,114 @@ version: 2
 
 sources:
   - name: pbdb_raw
-    description: "Raw, minimally transformed data loaded into BigQuery from PBDB API"
+    description: "Raw data loaded into BigQuery from PBDB API (compact vocabulary)"
     database: "{{ var('project_id') }}"
     schema: pbdb_raw
     tables:
       - name: occurrences
-        description: "Raw occurrence data from PBDB API"
+        description: "Raw occurrence data from PBDB API (with coords and paleoloc blocks)"
         columns:
-          - name: occurrence_no
+          - name: oid
             description: "Unique occurrence identifier"
             tests:
               - unique
               - not_null
-          - name: collection_no
-            description: "Collection number"
-          - name: identified_name
-            description: "Identified name"
-          - name: identified_rank
-            description: "Taxonomic rank"
-          - name: acct_name
-            description: "Accepted name"
-          - name: genus
-            description: "Genus name"
-          - name: species
-            description: "Species name"
-          - name: early_interval
-            description: "Early geologic interval"
-          - name: late_interval
-            description: "Late geologic interval"
-          - name: max_ma
-            description: "Maximum age in millions of years"
-          - name: min_ma
-            description: "Minimum age in millions of years"
+          - name: cid
+            description: "Collection identifier"
+          - name: rid
+            description: "Reference identifier"
+          - name: idn
+            description: "Identified taxonomic name"
+          - name: tid
+            description: "Accepted taxon identifier"
+          - name: tna
+            description: "Accepted taxonomic name"
+          - name: rnk
+            description: "Accepted taxonomic rank (numeric)"
+          - name: oei
+            description: "Early interval name"
+          - name: oli
+            description: "Late interval name"
+          - name: eag
+            description: "Early age bound in Ma"
+          - name: lag
+            description: "Late age bound in Ma"
           - name: lng
-            description: "Longitude"
+            description: "Modern longitude"
           - name: lat
-            description: "Latitude"
-          - name: country
-            description: "Country"
-          - name: state
-            description: "State/Province"
-          - name: formation
-            description: "Formation name"
-          - name: environment
-            description: "Environment type"
+            description: "Modern latitude"
+          - name: pln
+            description: "Paleolongitude"
+          - name: pla
+            description: "Paleolatitude"
+          - name: pgm
+            description: "Paleocoordinate model used"
+          - name: gpl
+            description: "Geoplate identifier"
+
+      - name: collections
+        description: "Raw collection data from PBDB API (with coords, paleoloc, loc, strat, geo blocks)"
+        columns:
+          - name: oid
+            description: "Unique collection identifier"
+            tests:
+              - unique
+              - not_null
+          - name: rid
+            description: "Reference identifier"
+          - name: nam
+            description: "Collection name"
+          - name: oei
+            description: "Early interval name"
+          - name: oli
+            description: "Late interval name"
+          - name: eag
+            description: "Early age bound in Ma"
+          - name: lag
+            description: "Late age bound in Ma"
+          - name: lng
+            description: "Modern longitude"
+          - name: lat
+            description: "Modern latitude"
+          - name: pln
+            description: "Paleolongitude"
+          - name: pla
+            description: "Paleolatitude"
+          - name: cc2
+            description: "Two-letter country code"
+          - name: sta
+            description: "State or province"
+          - name: sfm
+            description: "Stratigraphic formation"
+          - name: lit
+            description: "Lithology"
+          - name: env
+            description: "Depositional environment"
+
+      - name: taxa
+        description: "Raw taxonomic data from PBDB API (with app and classext blocks)"
+        columns:
+          - name: oid
+            description: "Taxon identifier (may contain duplicates from API synonyms; deduplicated in stg_taxa)"
+            tests:
+              - not_null
+          - name: nam
+            description: "Taxon name"
+          - name: rnk
+            description: "Taxonomic rank (numeric code)"
+          - name: noc
+            description: "Number of occurrences"
+          - name: par
+            description: "Parent taxon identifier"
+          - name: fea
+            description: "First appearance early age in Ma"
+          - name: lla
+            description: "Last appearance late age in Ma"
+          - name: phl
+            description: "Phylum name"
+          - name: cll
+            description: "Class name"
+          - name: odl
+            description: "Order name"
+          - name: fml
+            description: "Family name"

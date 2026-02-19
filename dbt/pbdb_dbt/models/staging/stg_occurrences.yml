@@ -4,46 +4,48 @@ models:
   - name: stg_occurrences
     description: "Staging model for PBDB occurrence data, cleaned and standardized from pbdb_raw.occurrences"
     columns:
-      # Primary identifiers
       - name: collection_id
-        description: "Collection identifier (from cid)"
+        description: "Collection identifier"
       - name: occurrence_id
-        description: "Unique occurrence identifier (from oid)"
+        description: "Unique occurrence identifier"
         tests:
           - unique
           - not_null
       - name: reference_id
-        description: "Reference identifier (from rid)"
-
-      # Taxonomic information
+        description: "Reference identifier"
       - name: identified_name
-        description: "Identified name (from idn)"
+        description: "Identified taxonomic name as entered"
       - name: taxon_id
-        description: "Taxon identifier (from tid)"
+        description: "Accepted taxon identifier"
       - name: taxon_name
-        description: "Accepted taxonomic name (from tna)"
+        description: "Accepted taxonomic name"
       - name: taxonomic_difference_flag
-        description: "Taxonomic difference flag (from tdf)"
+        description: "Taxonomic difference flag"
       - name: taxonomic_rank
-        description: "Taxonomic rank (from rnk)"
-
-      # Temporal information
+        description: "Accepted taxonomic rank (numeric)"
       - name: early_age_ma
-        description: "Early age in millions of years (from eag)"
+        description: "Early age bound in millions of years"
       - name: early_interval
-        description: "Early interval name (from oei)"
+        description: "Early geological interval name"
       - name: interval_id
-        description: "Interval identifier (from iid)"
+        description: "Geological interval identifier"
       - name: latest_age_ma
-        description: "Latest age in millions of years (from lag)"
-      # Geographic information
-      - name: original_location_identifier
-        description: "Original location identifier (from oli)"
-
-      # Data quality
+        description: "Late age bound in millions of years"
+      - name: late_interval
+        description: "Late geological interval name"
+      - name: longitude
+        description: "Modern longitude of the occurrence"
+      - name: latitude
+        description: "Modern latitude of the occurrence"
+      - name: paleo_longitude
+        description: "Reconstructed paleolongitude at time of deposition"
+      - name: paleo_latitude
+        description: "Reconstructed paleolatitude at time of deposition"
+      - name: paleo_model
+        description: "Plate tectonic model used for paleocoordinate reconstruction"
+      - name: geoplate_id
+        description: "Geoplate identifier for the tectonic plate"
       - name: record_flags
-        description: "Record flags (from flg)"
-
-      # dbt metadata
+        description: "Record-level quality/status flags"
       - name: _dbt_loaded_at
         description: "Timestamp when the record was loaded by dbt"

@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: mart_diversity_through_time
+    description: >
+      Phanerozoic diversity curve in 10 Ma time bins (0–550 Ma). Each row is one
+      time bin with counts of distinct genera, families, orders, classes, and
+      phyla, plus a marine/non-marine genus split. Occurrences are assigned to
+      bins using their midpoint age.
+    columns:
+      - name: bin_start
+        description: "Start of the time bin in Ma (younger bound)"
+        tests:
+          - unique
+          - not_null
+      - name: bin_end
+        description: "End of the time bin in Ma (older bound)"
+      - name: bin_midpoint
+        description: "Midpoint of the time bin in Ma"
+      - name: total_occurrences
+        description: "Total number of fossil occurrences in this bin"
+      - name: genus_richness
+        description: "Count of distinct genera in this bin"
+      - name: family_richness
+        description: "Count of distinct families in this bin"
+      - name: order_richness
+        description: "Count of distinct orders in this bin"
+      - name: class_richness
+        description: "Count of distinct classes in this bin"
+      - name: phylum_richness
+        description: "Count of distinct phyla in this bin"
+      - name: species_name_count
+        description: "Count of distinct species-level taxon names in this bin"
+      - name: marine_genus_richness
+        description: "Count of distinct genera with a marine depositional environment"
+      - name: non_marine_genus_richness
+        description: "Count of distinct genera with a non-marine depositional environment"

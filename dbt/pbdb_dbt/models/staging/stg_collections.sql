@@ -1,28 +1,20 @@
 with source_data as (
     select *
-    from {{ source('pbdb_raw', 'occurrences') }}
+    from {{ source('pbdb_raw', 'collections') }}
 ),
 
 renamed as (
     select
         -- Primary identifiers
-        cid as collection_id,
-        oid as occurrence_id,
+        oid as collection_id,
         rid as reference_id,
-
-        -- Taxonomic information
-        idn as identified_name,
-        tid as taxon_id,
-        tna as taxon_name,
-        tdf as taxonomic_difference_flag,
-        rnk as taxonomic_rank,
+        nam as collection_name,
 
         -- Temporal information
-        eag as early_age_ma,
         oei as early_interval,
-        iid as interval_id,
-        lag as latest_age_ma,
         oli as late_interval,
+        eag as early_age_ma,
+        lag as latest_age_ma,
 
         -- Modern coordinates
         lng as longitude,
@@ -34,8 +26,18 @@ renamed as (
         pm1 as paleo_model,
         gpl as geoplate_id,
 
-        -- Data quality
-        flg as record_flags,
+        -- Location
+        cc2 as country_code,
+        stp as state_province,
+        cny as county,
+
+        -- Stratigraphy
+        sfm as formation,
+        sgr as strat_group,
+        smb as strat_member,
+
+        -- Environment
+        env as environment,
 
         -- dbt metadata
         current_timestamp() as _dbt_loaded_at

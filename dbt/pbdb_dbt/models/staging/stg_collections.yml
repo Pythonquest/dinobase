@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_collections
+    description: "Staging model for PBDB collection data — fossil collection sites with geographic, stratigraphic, and environmental context"
+    columns:
+      - name: collection_id
+        description: "Unique collection identifier"
+        tests:
+          - unique
+          - not_null
+      - name: reference_id
+        description: "Reference identifier for the primary publication"
+      - name: collection_name
+        description: "Descriptive name of the collection"
+      - name: early_interval
+        description: "Early geological interval name"
+      - name: late_interval
+        description: "Late geological interval name"
+      - name: early_age_ma
+        description: "Early age bound in millions of years"
+      - name: latest_age_ma
+        description: "Late age bound in millions of years"
+      - name: longitude
+        description: "Modern longitude"
+      - name: latitude
+        description: "Modern latitude"
+      - name: paleo_longitude
+        description: "Reconstructed paleolongitude"
+      - name: paleo_latitude
+        description: "Reconstructed paleolatitude"
+      - name: paleo_model
+        description: "Plate tectonic model used for paleocoordinate reconstruction"
+      - name: geoplate_id
+        description: "Geoplate identifier for the tectonic plate"
+      - name: country_code
+        description: "Two-letter country code (ISO 3166-1 alpha-2)"
+      - name: state_province
+        description: "State or province"
+      - name: county
+        description: "County or equivalent subdivision"
+      - name: formation
+        description: "Stratigraphic formation name"
+      - name: strat_group
+        description: "Stratigraphic group"
+      - name: strat_member
+        description: "Stratigraphic member"
+      - name: environment
+        description: "Depositional environment (e.g. 'marine', 'terrestrial')"
+      - name: _dbt_loaded_at
+        description: "Timestamp when the record was loaded by dbt"

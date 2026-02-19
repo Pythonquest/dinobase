@@ -1,11 +1,12 @@
 version: 2
 
 models:
-  - name: mart_occurrences
+  - name: int_occurrences_enriched
     description: >
-      Analytics-ready occurrence table enriched with full taxonomic hierarchy,
-      modern and paleocoordinates, collection-level geography, stratigraphy,
-      and depositional environment. Built from int_occurrences_enriched.
+      Enriched occurrences joining occurrence records with collection context
+      (geography, stratigraphy, environment) and taxonomic hierarchy (phylum
+      through genus). This is the single wide table that downstream marts
+      should build from.
     columns:
       - name: occurrence_id
         description: "Unique occurrence identifier"
@@ -44,10 +45,10 @@ models:
         description: "Late geological interval name"
       - name: latest_age_ma
         description: "Late age bound in Ma"
-      - name: midpoint_age_ma
-        description: "Midpoint age in Ma — (early_age_ma + latest_age_ma) / 2, falling back to whichever is available"
       - name: interval_id
         description: "Geological interval identifier"
+      - name: midpoint_age_ma
+        description: "Midpoint age in Ma, calculated as (early_age_ma + latest_age_ma) / 2"
       - name: first_appearance_early_ma
         description: "Early bound of the taxon's first appearance in Ma"
       - name: first_appearance_late_ma
@@ -57,9 +58,9 @@ models:
       - name: last_appearance_late_ma
         description: "Late bound of the taxon's last appearance in Ma"
       - name: longitude
-        description: "Modern longitude"
+        description: "Modern longitude (occurrence-level, fallback to collection)"
       - name: latitude
-        description: "Modern latitude"
+        description: "Modern latitude (occurrence-level, fallback to collection)"
       - name: paleo_longitude
         description: "Reconstructed paleolongitude"
       - name: paleo_latitude

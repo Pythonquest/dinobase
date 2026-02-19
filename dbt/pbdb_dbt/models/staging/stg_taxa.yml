@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: stg_taxa
+    description: "Staging model for PBDB taxonomic data — taxa with classification hierarchy and first/last appearance ages"
+    columns:
+      - name: taxon_id
+        description: "Unique taxon identifier"
+        tests:
+          - unique
+          - not_null
+      - name: taxon_name
+        description: "Accepted taxon name"
+      - name: taxon_rank_code
+        description: "Numeric taxonomic rank code (e.g. 5=class, 9=order, 13=family, 17=genus, 22=species)"
+      - name: occurrence_count
+        description: "Total number of occurrences of this taxon in PBDB"
+      - name: parent_taxon_id
+        description: "Identifier of the parent taxon in the hierarchy"
+      - name: reference_id
+        description: "Reference identifier for the primary publication"
+      - name: first_appearance_early_ma
+        description: "Early bound of the first appearance age in Ma"
+      - name: first_appearance_late_ma
+        description: "Late bound of the first appearance age in Ma"
+      - name: last_appearance_early_ma
+        description: "Early bound of the last appearance age in Ma"
+      - name: last_appearance_late_ma
+        description: "Late bound of the last appearance age in Ma"
+      - name: phylum
+        description: "Phylum this taxon belongs to"
+      - name: taxon_class
+        description: "Class this taxon belongs to"
+      - name: taxon_order
+        description: "Order this taxon belongs to"
+      - name: family
+        description: "Family this taxon belongs to"
+      - name: genus
+        description: "Genus this taxon belongs to (if applicable)"
+      - name: record_flags
+        description: "Record-level quality/status flags"
+      - name: _dbt_loaded_at
+        description: "Timestamp when the record was loaded by dbt"
