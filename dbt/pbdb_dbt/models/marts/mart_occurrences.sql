@@ -26,6 +26,7 @@ select
     late_interval,
     latest_age_ma,
     midpoint_age_ma,
+    time_bin_start,
     interval_id,
 
     -- First / last appearance

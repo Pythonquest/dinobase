@@ -49,6 +49,8 @@ models:
         description: "Geological interval identifier"
       - name: midpoint_age_ma
         description: "Midpoint age in Ma, calculated as (early_age_ma + latest_age_ma) / 2"
+      - name: time_bin_start
+        description: "Start of the 10 Ma time bin this occurrence falls into, derived from midpoint_age_ma. Joins to mart_diversity_through_time.bin_start."
       - name: first_appearance_early_ma
         description: "Early bound of the taxon's first appearance in Ma"
       - name: first_appearance_late_ma

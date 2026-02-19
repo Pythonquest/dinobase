@@ -46,6 +46,8 @@ models:
         description: "Late age bound in Ma"
       - name: midpoint_age_ma
         description: "Midpoint age in Ma — (early_age_ma + latest_age_ma) / 2, falling back to whichever is available"
+      - name: time_bin_start
+        description: "Start of the 10 Ma time bin this occurrence falls into. Joins to mart_diversity_through_time.bin_start."
       - name: interval_id
         description: "Geological interval identifier"
       - name: first_appearance_early_ma

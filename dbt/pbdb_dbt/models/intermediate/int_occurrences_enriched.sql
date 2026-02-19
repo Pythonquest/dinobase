@@ -43,6 +43,14 @@ enriched as (
             else coalesce(o.early_age_ma, o.latest_age_ma)
         end as midpoint_age_ma,
 
+        cast(floor(
+            case
+                when o.early_age_ma is not null and o.latest_age_ma is not null
+                    then (o.early_age_ma + o.latest_age_ma) / 2.0
+                else coalesce(o.early_age_ma, o.latest_age_ma)
+            end / 10
+        ) * 10 as int64) as time_bin_start,
+
         -- First / last appearance from taxa
         t.first_appearance_early_ma,
         t.first_appearance_late_ma,
