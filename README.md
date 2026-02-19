@@ -1,7 +1,7 @@
 # PBDB Pipeline
 
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
-![dbt](https://img.shields.io/badge/dbt_Core-1.8-FF694B?logo=dbt&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt_Core-1.11-FF694B?logo=dbt&logoColor=white)
 ![BigQuery](https://img.shields.io/badge/BigQuery-4285F4?logo=googlebigquery&logoColor=white)
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?logo=googlecloud&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
@@ -37,6 +37,7 @@ pbdb-pipeline/
 │       ├── profiles.yml.example  # Example profiles (copy to ~/.dbt/)
 │       ├── models/
 │       │   ├── staging/      # Staging models (views)
+│       │   ├── intermediate/ # Intermediate models (views)
 │       │   ├── marts/        # Mart models (tables)
 │       │   ├── _sources.yml  # Source definitions for pbdb_raw
 │       │   └── schema.yml   # Model documentation
