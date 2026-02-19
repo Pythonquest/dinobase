@@ -27,21 +27,26 @@ jobs:
         run: |
           pip install dbt-bigquery
       
+      - name: Create dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          cp profiles.yml ~/.dbt/profiles.yml
+      
       - name: Run dbt parse
         run: |
-          dbt parse --profiles-dir .
+          dbt parse
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       
       - name: Run dbt compile
         run: |
-          dbt compile --profiles-dir .
+          dbt compile
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       
       - name: Run dbt debug (dry-run)
         run: |
-          dbt debug --config-dir --profiles-dir .
+          dbt debug --config-dir
         continue-on-error: true
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -97,6 +102,11 @@ jobs:
         run: |
           pip install dbt-bigquery
       
+      - name: Create dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          cp profiles.yml ~/.dbt/profiles.yml
+      
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -107,7 +117,7 @@ jobs:
       
       - name: Run dbt tests
         run: |
-          dbt test --profiles-dir .
+          dbt test
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         continue-on-error: true
