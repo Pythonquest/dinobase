@@ -30,7 +30,19 @@ jobs:
       - name: Create dbt profiles
         run: |
           mkdir -p ~/.dbt
-          cp profiles.yml ~/.dbt/profiles.yml
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          pbdb_dbt:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: oauth
+                project: "${{ secrets.GCP_PROJECT_ID }}"
+                dataset: pbdb_analytics
+                threads: 1
+                timeout_seconds: 300
+                location: US
+          EOF
       
       - name: Run dbt parse
         run: |
@@ -105,7 +117,19 @@ jobs:
       - name: Create dbt profiles
         run: |
           mkdir -p ~/.dbt
-          cp profiles.yml ~/.dbt/profiles.yml
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          pbdb_dbt:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: oauth
+                project: "${{ secrets.GCP_PROJECT_ID }}"
+                dataset: pbdb_analytics
+                threads: 1
+                timeout_seconds: 300
+                location: US
+          EOF
       
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
