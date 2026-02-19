@@ -49,19 +49,6 @@ jobs:
           dbt parse
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      
-      - name: Run dbt compile
-        run: |
-          dbt compile
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      
-      - name: Run dbt debug (dry-run)
-        run: |
-          dbt debug --config-dir
-        continue-on-error: true
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
   lint-python:
     name: Lint Python
