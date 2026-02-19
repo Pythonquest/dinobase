@@ -29,19 +29,19 @@ jobs:
       
       - name: Run dbt parse
         run: |
-          dbt parse
+          dbt parse --profiles-dir .
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       
       - name: Run dbt compile
         run: |
-          dbt compile
+          dbt compile --profiles-dir .
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       
       - name: Run dbt debug (dry-run)
         run: |
-          dbt debug --config-dir
+          dbt debug --config-dir --profiles-dir .
         continue-on-error: true
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -107,7 +107,7 @@ jobs:
       
       - name: Run dbt tests
         run: |
-          dbt test
+          dbt test --profiles-dir .
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         continue-on-error: true
