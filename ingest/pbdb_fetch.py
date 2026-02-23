@@ -42,9 +42,11 @@ class PBDBFetcher:
         Initialize the fetcher with BigQuery client.
 
         Args:
-            project_id: GCP project ID (if not provided and credentials file exists, will be extracted from credentials)
+            project_id: GCP project ID (falls back to credentials
+                file if not provided)
             dataset_id: BigQuery dataset ID
-            credentials_path: Path to service account JSON key file (optional, uses GOOGLE_APPLICATION_CREDENTIALS env var if not provided)
+            credentials_path: Path to service account JSON key file
+                (uses GOOGLE_APPLICATION_CREDENTIALS env var as fallback)
         """
         self.dataset_id = dataset_id
 
@@ -113,7 +115,7 @@ class PBDBFetcher:
                 if "errors" in error_data:
                     logger.error(f"API errors: {error_data['errors']}")
                     error_msg += f": {error_data['errors']}"
-            except:
+            except (ValueError, KeyError):
                 error_msg += f": {response.text[:500]}"
             raise requests.exceptions.HTTPError(error_msg, response=response)
 
