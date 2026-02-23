@@ -15,8 +15,7 @@ import logging
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -24,26 +23,31 @@ logger = logging.getLogger(__name__)
 PBDB_API_BASE = "https://paleobiodb.org/data1.2"
 
 # BigQuery configuration
-PROJECT_ID = os.getenv('GCP_PROJECT_ID', 'dinobase-project')
-DATASET_ID = 'pbdb_raw'
-LOCATION = 'US'
-CREDENTIALS_PATH = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+PROJECT_ID = os.getenv("GCP_PROJECT_ID", "dinobase-project")
+DATASET_ID = "pbdb_raw"
+LOCATION = "US"
+CREDENTIALS_PATH = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 
 class PBDBFetcher:
     """Fetches data from PBDB API and loads into BigQuery."""
-    
-    def __init__(self, project_id: str = PROJECT_ID, dataset_id: str = DATASET_ID, credentials_path: Optional[str] = None):
+
+    def __init__(
+        self,
+        project_id: str = PROJECT_ID,
+        dataset_id: str = DATASET_ID,
+        credentials_path: Optional[str] = None,
+    ):
         """
         Initialize the fetcher with BigQuery client.
-        
+
         Args:
             project_id: GCP project ID (if not provided and credentials file exists, will be extracted from credentials)
             dataset_id: BigQuery dataset ID
             credentials_path: Path to service account JSON key file (optional, uses GOOGLE_APPLICATION_CREDENTIALS env var if not provided)
         """
         self.dataset_id = dataset_id
-        
+
         # Load credentials from service account file if provided
         credentials = None
         creds_path = credentials_path or CREDENTIALS_PATH
@@ -51,23 +55,22 @@ class PBDBFetcher:
             if not os.path.exists(creds_path):
                 raise FileNotFoundError(f"Credentials file not found: {creds_path}")
             logger.info(f"Loading credentials from: {creds_path}")
-            
+
             # Load credentials and extract project_id from file if not explicitly provided
-            with open(creds_path, 'r') as f:
+            with open(creds_path, "r") as f:
                 creds_data = json.load(f)
-                if project_id == PROJECT_ID and 'project_id' in creds_data:
-                    project_id = creds_data['project_id']
+                if project_id == PROJECT_ID and "project_id" in creds_data:
+                    project_id = creds_data["project_id"]
                     logger.info(f"Using project_id from credentials file: {project_id}")
-            
+
             credentials = service_account.Credentials.from_service_account_file(
-                creds_path,
-                scopes=['https://www.googleapis.com/auth/bigquery']
+                creds_path, scopes=["https://www.googleapis.com/auth/bigquery"]
             )
-        
+
         self.project_id = project_id
         self.client = bigquery.Client(project=project_id, credentials=credentials)
         self._ensure_dataset_exists()
-    
+
     def _ensure_dataset_exists(self):
         """Ensure the pbdb_raw dataset exists in BigQuery."""
         dataset_ref = self.client.dataset(self.dataset_id)
@@ -80,7 +83,7 @@ class PBDBFetcher:
             dataset.description = "Raw, minimally transformed PBDB data"
             dataset = self.client.create_dataset(dataset, exists_ok=True)
             logger.info(f"Created dataset {self.dataset_id}")
-    
+
     def _fetch_from_api(
         self,
         endpoint: str,
@@ -105,9 +108,9 @@ class PBDBFetcher:
             error_msg = f"API request failed with status {response.status_code}"
             try:
                 error_data = response.json()
-                if 'warnings' in error_data:
+                if "warnings" in error_data:
                     logger.warning(f"API warnings: {error_data['warnings']}")
-                if 'errors' in error_data:
+                if "errors" in error_data:
                     logger.error(f"API errors: {error_data['errors']}")
                     error_msg += f": {error_data['errors']}"
             except:
@@ -115,7 +118,7 @@ class PBDBFetcher:
             raise requests.exceptions.HTTPError(error_msg, response=response)
 
         data = response.json()
-        records = data.get('records', [])
+        records = data.get("records", [])
         logger.info(f"Fetched {len(records)} records from {endpoint}")
 
         return records
@@ -124,8 +127,8 @@ class PBDBFetcher:
         self,
         limit: int = 1000,
         offset: int = 0,
-        show: str = 'coords,paleoloc',
-        **kwargs
+        show: str = "coords,paleoloc",
+        **kwargs,
     ) -> List[Dict]:
         """
         Fetch occurrence data from PBDB API with coordinates and paleocoordinates.
@@ -139,20 +142,15 @@ class PBDBFetcher:
         Returns:
             List of occurrence records
         """
-        params = {
-            'limit': limit,
-            'offset': offset,
-            'show': show,
-            **kwargs
-        }
-        return self._fetch_from_api('occs/list.json', params)
+        params = {"limit": limit, "offset": offset, "show": show, **kwargs}
+        return self._fetch_from_api("occs/list.json", params)
 
     def fetch_collections(
         self,
         limit: int = 1000,
         offset: int = 0,
-        show: str = 'coords,paleoloc,loc,strat,geo',
-        **kwargs
+        show: str = "coords,paleoloc,loc,strat,geo",
+        **kwargs,
     ) -> List[Dict]:
         """
         Fetch collection data from PBDB API with full geographic and geological context.
@@ -166,20 +164,11 @@ class PBDBFetcher:
         Returns:
             List of collection records
         """
-        params = {
-            'limit': limit,
-            'offset': offset,
-            'show': show,
-            **kwargs
-        }
-        return self._fetch_from_api('colls/list.json', params)
+        params = {"limit": limit, "offset": offset, "show": show, **kwargs}
+        return self._fetch_from_api("colls/list.json", params)
 
     def fetch_taxa(
-        self,
-        limit: int = 1000,
-        offset: int = 0,
-        show: str = 'app,classext',
-        **kwargs
+        self, limit: int = 1000, offset: int = 0, show: str = "app,classext", **kwargs
     ) -> List[Dict]:
         """
         Fetch taxonomic data from PBDB API with appearance times and classification hierarchy.
@@ -193,23 +182,18 @@ class PBDBFetcher:
         Returns:
             List of taxon records
         """
-        params = {
-            'limit': limit,
-            'offset': offset,
-            'show': show,
-            **kwargs
-        }
-        return self._fetch_from_api('taxa/list.json', params)
-    
+        params = {"limit": limit, "offset": offset, "show": show, **kwargs}
+        return self._fetch_from_api("taxa/list.json", params)
+
     def load_to_bigquery(
         self,
         table_id: str,
         records: List[Dict],
-        write_disposition: str = 'WRITE_APPEND'
+        write_disposition: str = "WRITE_APPEND",
     ):
         """
         Load records into BigQuery table.
-        
+
         Args:
             table_id: Name of the BigQuery table
             records: List of records to load
@@ -218,32 +202,30 @@ class PBDBFetcher:
         if not records:
             logger.warning(f"No records to load into {table_id}")
             return
-        
+
         table_ref = self.client.dataset(self.dataset_id).table(table_id)
-        
+
         # Load data
         job_config = bigquery.LoadJobConfig(
             source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
             write_disposition=write_disposition,
-            autodetect=True
+            autodetect=True,
         )
-        
+
         job = self.client.load_table_from_json(
-            records,
-            table_ref,
-            job_config=job_config
+            records, table_ref, job_config=job_config
         )
-        
+
         job.result()  # Wait for the job to complete
         logger.info(f"Loaded {len(records)} records into {self.dataset_id}.{table_id}")
-    
+
     def fetch_and_load_occurrences(
         self,
-        table_id: str = 'occurrences',
+        table_id: str = "occurrences",
         limit: int = 1000,
         offset: int = 0,
-        write_disposition: str = 'WRITE_APPEND',
-        **kwargs
+        write_disposition: str = "WRITE_APPEND",
+        **kwargs,
     ):
         """
         Fetch occurrences from PBDB API and load into BigQuery.
@@ -260,11 +242,11 @@ class PBDBFetcher:
 
     def fetch_and_load_collections(
         self,
-        table_id: str = 'collections',
+        table_id: str = "collections",
         limit: int = 1000,
         offset: int = 0,
-        write_disposition: str = 'WRITE_APPEND',
-        **kwargs
+        write_disposition: str = "WRITE_APPEND",
+        **kwargs,
     ):
         """
         Fetch collections from PBDB API and load into BigQuery.
@@ -281,11 +263,11 @@ class PBDBFetcher:
 
     def fetch_and_load_taxa(
         self,
-        table_id: str = 'taxa',
+        table_id: str = "taxa",
         limit: int = 1000,
         offset: int = 0,
-        write_disposition: str = 'WRITE_APPEND',
-        **kwargs
+        write_disposition: str = "WRITE_APPEND",
+        **kwargs,
     ):
         """
         Fetch taxa from PBDB API and load into BigQuery.
@@ -306,31 +288,31 @@ def main():
     fetcher = PBDBFetcher()
 
     fetcher.fetch_and_load_occurrences(
-        table_id='occurrences',
+        table_id="occurrences",
         limit=1000,
         offset=0,
-        write_disposition='WRITE_TRUNCATE',
-        all_records=True
+        write_disposition="WRITE_TRUNCATE",
+        all_records=True,
     )
 
     fetcher.fetch_and_load_collections(
-        table_id='collections',
+        table_id="collections",
         limit=1000,
         offset=0,
-        write_disposition='WRITE_TRUNCATE',
-        all_records=True
+        write_disposition="WRITE_TRUNCATE",
+        all_records=True,
     )
 
     fetcher.fetch_and_load_taxa(
-        table_id='taxa',
+        table_id="taxa",
         limit=1000,
         offset=0,
-        write_disposition='WRITE_TRUNCATE',
-        all_records=True
+        write_disposition="WRITE_TRUNCATE",
+        all_records=True,
     )
 
     logger.info("Data fetch and load completed")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
