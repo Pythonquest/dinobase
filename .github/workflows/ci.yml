@@ -44,6 +44,10 @@ jobs:
                 location: US
           EOF
       
+      - name: Install dbt packages
+        run: |
+          dbt deps
+
       - name: Run dbt parse
         run: |
           dbt parse
@@ -126,6 +130,10 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
       
+      - name: Install dbt packages
+        run: |
+          dbt deps
+
       - name: Run dbt tests
         run: |
           dbt test
