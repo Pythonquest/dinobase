@@ -30,13 +30,13 @@ renamed as (
         flg as record_flags,
 
         -- dbt metadata
-        current_timestamp() as _dbt_loaded_at,
-
-        row_number() over (partition by oid order by noc desc) as _row_num
+        current_timestamp() as _dbt_loaded_at
 
     from source_data
 )
 
-select * except(_row_num)
-from renamed
-where _row_num = 1
+{{ dbt_utils.deduplicate(
+    relation='renamed',
+    partition_by='taxon_id',
+    order_by='occurrence_count desc'
+) }}

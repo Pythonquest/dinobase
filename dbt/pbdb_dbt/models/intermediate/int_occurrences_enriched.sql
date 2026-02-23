@@ -12,6 +12,9 @@ taxa as (
 
 enriched as (
     select
+        -- Surrogate key
+        {{ dbt_utils.generate_surrogate_key(['o.occurrence_id']) }} as occurrence_surrogate_key,
+
         -- Occurrence identifiers
         o.occurrence_id,
         o.collection_id,

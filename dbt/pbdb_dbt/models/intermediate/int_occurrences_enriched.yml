@@ -7,7 +7,18 @@ models:
       (geography, stratigraphy, environment) and taxonomic hierarchy (phylum
       through genus). This is the single wide table that downstream marts
       should build from.
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "early_age_ma >= latest_age_ma"
+          config:
+            where: "early_age_ma is not null and latest_age_ma is not null"
     columns:
+      - name: occurrence_surrogate_key
+        description: "Hashed surrogate key derived from occurrence_id"
+        tests:
+          - unique
+          - not_null
       - name: occurrence_id
         description: "Unique occurrence identifier"
         tests:
@@ -15,6 +26,11 @@ models:
           - not_null
       - name: collection_id
         description: "Collection this occurrence belongs to"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_collections')
+                field: collection_id
       - name: reference_id
         description: "Primary reference identifier"
       - name: identified_name
@@ -39,16 +55,34 @@ models:
         description: "Genus from taxonomic hierarchy"
       - name: early_age_ma
         description: "Early age bound in Ma"
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+              config:
+                where: "early_age_ma is not null"
       - name: early_interval
         description: "Early geological interval name"
       - name: late_interval
         description: "Late geological interval name"
       - name: latest_age_ma
         description: "Late age bound in Ma"
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+              config:
+                where: "latest_age_ma is not null"
       - name: interval_id
         description: "Geological interval identifier"
       - name: midpoint_age_ma
         description: "Midpoint age in Ma, calculated as (early_age_ma + latest_age_ma) / 2"
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+              config:
+                where: "midpoint_age_ma is not null"
       - name: time_bin_start
         description: "Start of the 10 Ma time bin this occurrence falls into, derived from midpoint_age_ma. Joins to mart_diversity_through_time.bin_start."
       - name: first_appearance_early_ma
@@ -61,8 +95,28 @@ models:
         description: "Late bound of the taxon's last appearance in Ma"
       - name: longitude
         description: "Modern longitude (occurrence-level, fallback to collection)"
+        tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.8
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -180
+                max_value: 180
+              config:
+                where: "longitude is not null"
       - name: latitude
         description: "Modern latitude (occurrence-level, fallback to collection)"
+        tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.8
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -90
+                max_value: 90
+              config:
+                where: "latitude is not null"
       - name: paleo_longitude
         description: "Reconstructed paleolongitude"
       - name: paleo_latitude

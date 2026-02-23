@@ -20,5 +20,5 @@ select
     count(distinct case when environment not like '%marine%' then genus end) as non_marine_genus_richness
 
 from occurrences
-group by time_bin_start
+{{ dbt_utils.group_by(n=3) }}
 order by bin_start
