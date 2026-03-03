@@ -16,7 +16,7 @@ A data pipeline for fetching, loading, and transforming Paleobiology Database (P
 ![Dinobase Pipeline Architecture](docs/architecture_diagram.png)
 
 This pipeline extracts data from the Paleobiology Database (PBDB),
-lands raw JSON in Google Cloud Storage, loads into BigQuery,
+loads JSON directly into BigQuery via the Python client library,
 and transforms using dbt Core into analytics-ready models.
 Designed with modular ingestion and scalable transformation patterns.
 
