@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: mart_occurrence_opinions
+    description: >
+      Taxonomic opinions associated with occurrence data entry, enriched with accepted taxon hierarchy.
+      Grain matches stg_occurrence_opinions; opinion_id may repeat if the API returns duplicate rows.
+    columns:
+      - name: opinion_id
+        description: "PBDB opinion identifier"
+        tests:
+          - not_null
+      - name: taxon_id
+        description: "Subject taxon identifier"
+      - name: opinion_status
+        description: "Taxonomic status in the opinion"
+      - name: reference_id
+        description: "Bibliographic reference"

@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: stg_occurrence_opinions
+    description: "Taxonomic opinions associated with occurrence selections (occs/opinions); same shape as taxonomic opinions in default JSON"
+    columns:
+      - name: opinion_id
+        description: "PBDB opinion identifier (may repeat across rows when multiple occurrences share an opinion)"
+        tests:
+          - not_null
+      - name: opinion_type_code
+        description: "C = classification opinion; U = other"
+      - name: taxonomic_rank_code
+        description: "Rank code for the subject taxon"
+      - name: taxon_name
+        description: "Subject taxon name"
+      - name: taxon_id
+        description: "Subject taxon identifier"
+      - name: name_variant_id
+        description: "Name variant identifier"
+      - name: opinion_status
+        description: "Taxonomic status asserted"
+      - name: parent_taxon_name
+        description: "Parent taxon name in the opinion"
+      - name: parent_taxon_id
+        description: "Parent taxon identifier"
+      - name: spelling_reason
+        description: "Spelling / naming reason"
+      - name: opinion_author
+        description: "Opinion author text"
+      - name: opinion_publication_year
+        description: "Opinion publication year"
+      - name: reference_id
+        description: "Reference identifier"
+      - name: _dbt_loaded_at
+        description: "dbt run timestamp"

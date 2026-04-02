@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: mart_occurrences_extended
+    description: >
+      Same grain as mart_occurrences / int_occurrences_enriched with bibliographic fields from mart_references
+      and resolved interval metadata from mart_geologic_time when interval_id is populated.
+    columns:
+      - name: occurrence_id
+        description: "Unique occurrence identifier"
+        tests:
+          - unique
+          - not_null
+      - name: reference_id
+        description: "PBDB reference key"
+      - name: reference_title
+        description: "Resolved title from mart_references"
+      - name: interval_id
+        description: "PBDB interval key on the occurrence"
+      - name: interval_name
+        description: "Resolved interval name from mart_geologic_time"
+      - name: timescale_name
+        description: "Time scale name for the resolved interval"

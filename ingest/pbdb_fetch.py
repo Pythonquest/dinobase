@@ -221,6 +221,83 @@ class PBDBFetcher:
         job.result()  # Wait for the job to complete
         logger.info(f"Loaded {len(records)} records into {self.dataset_id}.{table_id}")
 
+    def fetch_and_load_paginated(
+        self,
+        endpoint: str,
+        table_id: str,
+        page_size: int = 5000,
+        extra_params: Optional[Dict] = None,
+    ) -> int:
+        """
+        Page through a PBDB list endpoint and load all rows into BigQuery.
+
+        The first page replaces the table; later pages append. Pass PBDB
+        selection params (e.g. all_records, all_taxa) via extra_params.
+
+        Returns:
+            Total number of records loaded.
+        """
+        extra_params = dict(extra_params or {})
+        offset = 0
+        total = 0
+        first_page = True
+        while True:
+            params = {"limit": page_size, "offset": offset, **extra_params}
+            records = self._fetch_from_api(endpoint, params)
+            if not records:
+                break
+            write_disposition = "WRITE_TRUNCATE" if first_page else "WRITE_APPEND"
+            self.load_to_bigquery(
+                table_id, records, write_disposition=write_disposition
+            )
+            total += len(records)
+            first_page = False
+            if len(records) < page_size:
+                break
+            offset += page_size
+        logger.info(
+            "Paginated load finished for %s -> %s (%s rows)",
+            endpoint,
+            table_id,
+            total,
+        )
+        return total
+
+    def fetch_taxonomic_opinions(
+        self, limit: int = 5000, offset: int = 0, **kwargs
+    ) -> List[Dict]:
+        """Taxonomic opinions (taxa/opinions.json)."""
+        params = {"limit": limit, "offset": offset, **kwargs}
+        return self._fetch_from_api("taxa/opinions.json", params)
+
+    def fetch_occurrence_opinions(
+        self, limit: int = 5000, offset: int = 0, **kwargs
+    ) -> List[Dict]:
+        """Opinions tied to occurrence records (occs/opinions.json)."""
+        params = {"limit": limit, "offset": offset, **kwargs}
+        return self._fetch_from_api("occs/opinions.json", params)
+
+    def fetch_references(
+        self, limit: int = 5000, offset: int = 0, **kwargs
+    ) -> List[Dict]:
+        """Bibliographic references (refs/list.json); requires a selector such as all_records."""
+        params = {"limit": limit, "offset": offset, **kwargs}
+        return self._fetch_from_api("refs/list.json", params)
+
+    def fetch_intervals(
+        self, limit: int = 5000, offset: int = 0, **kwargs
+    ) -> List[Dict]:
+        """Geological time intervals (intervals/list.json)."""
+        params = {"limit": limit, "offset": offset, **kwargs}
+        return self._fetch_from_api("intervals/list.json", params)
+
+    def fetch_timescales(
+        self, limit: int = 5000, offset: int = 0, **kwargs
+    ) -> List[Dict]:
+        """Time scales (timescales/list.json)."""
+        params = {"limit": limit, "offset": offset, **kwargs}
+        return self._fetch_from_api("timescales/list.json", params)
+
     def fetch_and_load_occurrences(
         self,
         table_id: str = "occurrences",
@@ -284,6 +361,61 @@ class PBDBFetcher:
         records = self.fetch_taxa(limit=limit, offset=offset, **kwargs)
         self.load_to_bigquery(table_id, records, write_disposition)
 
+    def fetch_and_load_taxonomic_opinions(
+        self,
+        table_id: str = "taxonomic_opinions",
+        page_size: int = 5000,
+        **kwargs,
+    ) -> int:
+        """Paginated load of taxa/opinions.json into BigQuery."""
+        return self.fetch_and_load_paginated(
+            "taxa/opinions.json", table_id, page_size=page_size, extra_params=kwargs
+        )
+
+    def fetch_and_load_occurrence_opinions(
+        self,
+        table_id: str = "occurrence_opinions",
+        page_size: int = 5000,
+        **kwargs,
+    ) -> int:
+        """Paginated load of occs/opinions.json into BigQuery."""
+        return self.fetch_and_load_paginated(
+            "occs/opinions.json", table_id, page_size=page_size, extra_params=kwargs
+        )
+
+    def fetch_and_load_references(
+        self,
+        table_id: str = "refs",
+        page_size: int = 5000,
+        **kwargs,
+    ) -> int:
+        """Paginated load of refs/list.json into BigQuery."""
+        return self.fetch_and_load_paginated(
+            "refs/list.json", table_id, page_size=page_size, extra_params=kwargs
+        )
+
+    def fetch_and_load_intervals(
+        self,
+        table_id: str = "intervals",
+        page_size: int = 5000,
+        **kwargs,
+    ) -> int:
+        """Paginated load of intervals/list.json into BigQuery."""
+        return self.fetch_and_load_paginated(
+            "intervals/list.json", table_id, page_size=page_size, extra_params=kwargs
+        )
+
+    def fetch_and_load_timescales(
+        self,
+        table_id: str = "timescales",
+        page_size: int = 5000,
+        **kwargs,
+    ) -> int:
+        """Load timescales/list.json (typically one short paginated pass)."""
+        return self.fetch_and_load_paginated(
+            "timescales/list.json", table_id, page_size=page_size, extra_params=kwargs
+        )
+
 
 def main():
     """Main entry point for the script."""
@@ -310,6 +442,35 @@ def main():
         limit=1000,
         offset=0,
         write_disposition="WRITE_TRUNCATE",
+        all_records=True,
+    )
+
+    # Classification opinions only (op_type=class) keeps volume manageable; use op_type="all" if needed.
+    fetcher.fetch_and_load_taxonomic_opinions(
+        table_id="taxonomic_opinions",
+        page_size=5000,
+        all_taxa=True,
+        op_type="class",
+    )
+    fetcher.fetch_and_load_occurrence_opinions(
+        table_id="occurrence_opinions",
+        page_size=5000,
+        all_records=True,
+        op_type="class",
+    )
+    fetcher.fetch_and_load_references(
+        table_id="refs",
+        page_size=5000,
+        all_records=True,
+    )
+    fetcher.fetch_and_load_intervals(
+        table_id="intervals",
+        page_size=5000,
+        all_records=True,
+    )
+    fetcher.fetch_and_load_timescales(
+        table_id="timescales",
+        page_size=5000,
         all_records=True,
     )
 

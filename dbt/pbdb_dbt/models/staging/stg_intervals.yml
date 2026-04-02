@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_intervals
+    description: >
+      Geological time intervals with ages and hierarchy within a timescale.
+      Duplicate interval_id rows from PBDB are collapsed to one row (deterministic pick by timescale_id).
+    columns:
+      - name: interval_id
+        description: "Interval identifier (int:...)"
+        tests:
+          - not_null
+          - unique
+      - name: timescale_id
+        description: "Timescale this interval belongs to (tsc:...)"
+      - name: interval_name
+        description: "Interval name"
+      - name: interval_type
+        description: "Chronostratigraphic level (eon, era, period, stage, ...)"
+      - name: parent_interval_id
+        description: "Parent interval in the same timescale"
+      - name: abbreviation
+        description: "Short label if present"
+      - name: color_hex
+        description: "Suggested chart color"
+      - name: latest_age_ma
+        description: "Younger age bound (Ma)"
+      - name: early_age_ma
+        description: "Older age bound (Ma)"
+      - name: reference_id
+        description: "Definitional reference"
+      - name: _dbt_loaded_at
+        description: "dbt run timestamp"

@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_timescales
+    description: "PBDB time scales (e.g. ICS) with overall age span and scope"
+    columns:
+      - name: timescale_id
+        description: "Timescale identifier (tsc:...)"
+        tests:
+          - not_null
+          - unique
+      - name: timescale_name
+        description: "Human-readable scale name"
+      - name: latest_age_ma
+        description: "Younger bound of the scale (Ma)"
+      - name: early_age_ma
+        description: "Older bound of the scale (Ma)"
+      - name: geographic_scope
+        description: "Region or theme (global, Europe, ...)"
+      - name: reference_id
+        description: "Associated reference"
+      - name: _dbt_loaded_at
+        description: "dbt run timestamp"

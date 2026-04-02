@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: mart_taxonomic_opinions
+    description: >
+      Taxonomic classification opinions from PBDB with the current accepted hierarchy for subject and parent taxa.
+      Use for synonymy, parent–child assertions, and linking opinions to literature via reference_id.
+    columns:
+      - name: opinion_id
+        description: "Unique opinion record (opn:...)"
+        tests:
+          - unique
+          - not_null
+      - name: taxon_id
+        description: "Subject taxon identifier"
+      - name: opinion_status
+        description: "Relationship asserted (e.g. belongs to, subjective synonym of)"
+      - name: parent_taxon_id
+        description: "Parent taxon in this opinion"
+      - name: reference_id
+        description: "Source reference for the opinion"
+      - name: subject_phylum
+        description: "Accepted phylum for the subject taxon (from stg_taxa)"
+      - name: parent_accepted_name
+        description: "Current accepted name of the parent taxon when join matches"

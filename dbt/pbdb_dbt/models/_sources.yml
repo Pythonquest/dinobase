@@ -113,3 +113,139 @@ sources:
             description: "Order name"
           - name: fml
             description: "Family name"
+
+      - name: taxonomic_opinions
+        description: "Raw taxonomic opinions from taxa/opinions.json (ingest default: all_taxa, op_type=class)"
+        columns:
+          - name: oid
+            description: "Opinion identifier (e.g. opn:...)"
+            tests:
+              - not_null
+          - name: otp
+            description: "Opinion type code (C=classification opinion selected for hierarchy)"
+          - name: rnk
+            description: "Rank assigned to the subject taxon in this opinion"
+          - name: nam
+            description: "Subject taxon name"
+          - name: tid
+            description: "Subject taxon identifier"
+          - name: vid
+            description: "Name variant identifier for the subject"
+          - name: sta
+            description: "Taxonomic status asserted (e.g. belongs to, subjective synonym of)"
+          - name: prl
+            description: "Parent taxon name as stated in the opinion"
+          - name: par
+            description: "Parent taxon identifier"
+          - name: spl
+            description: "Spelling / naming reason"
+          - name: oat
+            description: "Author(s) of the opinion"
+          - name: opy
+            description: "Publication year of the opinion"
+          - name: rid
+            description: "Reference from which the opinion was entered"
+
+      - name: occurrence_opinions
+        description: "Raw opinions linked to occurrence selections from occs/opinions.json (ingest default: all_records, op_type=class)"
+        columns:
+          - name: oid
+            description: "Opinion identifier"
+            tests:
+              - not_null
+          - name: otp
+            description: "Opinion type code"
+          - name: rnk
+            description: "Rank assigned to the subject taxon"
+          - name: nam
+            description: "Subject taxon name"
+          - name: tid
+            description: "Subject taxon identifier"
+          - name: vid
+            description: "Name variant identifier"
+          - name: sta
+            description: "Taxonomic status asserted"
+          - name: prl
+            description: "Parent taxon name"
+          - name: par
+            description: "Parent taxon identifier"
+          - name: spl
+            description: "Spelling reason"
+          - name: oat
+            description: "Opinion author text"
+          - name: opy
+            description: "Opinion publication year"
+          - name: rid
+            description: "Reference identifier"
+
+      - name: refs
+        description: "Bibliographic references from refs/list.json (ingest: all_records)"
+        columns:
+          - name: oid
+            description: "Reference identifier (ref:...)"
+            tests:
+              - not_null
+          - name: pty
+            description: "Publication type"
+          - name: tit
+            description: "Reference title"
+          - name: pby
+            description: "Publication year"
+          - name: ai1
+            description: "First author first initial(s)"
+          - name: al1
+            description: "First author last name"
+          - name: pbt
+            description: "Publication (journal/series) title"
+          - name: vol
+            description: "Volume"
+          - name: pgf
+            description: "First page"
+          - name: pgl
+            description: "Last page"
+          - name: lan
+            description: "Language"
+
+      - name: intervals
+        description: "Geological time intervals from intervals/list.json (ingest: all_records)"
+        columns:
+          - name: oid
+            description: "Interval identifier (int:...)"
+            tests:
+              - not_null
+          - name: tsc
+            description: "Time scale identifier (tsc:...)"
+          - name: nam
+            description: "Interval name"
+          - name: itp
+            description: "Interval type (eon, era, period, ...)"
+          - name: pid
+            description: "Parent interval identifier"
+          - name: abr
+            description: "Abbreviation"
+          - name: col
+            description: "Suggested display color (hex)"
+          - name: lag
+            description: "Late (young) age bound in Ma"
+          - name: eag
+            description: "Early (old) age bound in Ma"
+          - name: rid
+            description: "Reference identifier for the definition"
+
+      - name: timescales
+        description: "Time scales from timescales/list.json (ingest: all_records)"
+        columns:
+          - name: oid
+            description: "Timescale identifier (tsc:...)"
+            tests:
+              - not_null
+          - name: nam
+            description: "Timescale name"
+          - name: lag
+            description: "Late age bound in Ma (span of scale)"
+          - name: eag
+            description: "Early age bound in Ma"
+          - name: loc
+            description: "Geographic or thematic scope label"
+          - name: rid
+            description: "Reference identifier"

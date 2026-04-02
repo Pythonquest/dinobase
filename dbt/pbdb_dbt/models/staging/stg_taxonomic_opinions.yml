@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_taxonomic_opinions
+    description: "Taxonomic opinions from PBDB (taxa/opinions); classification backbone and synonym assertions"
+    columns:
+      - name: opinion_id
+        description: "PBDB opinion identifier"
+        tests:
+          - not_null
+          - unique
+      - name: opinion_type_code
+        description: "C = classification opinion used for hierarchy; U = not selected for classification"
+      - name: taxonomic_rank_code
+        description: "Rank code assigned to the subject taxon in this opinion"
+      - name: taxon_name
+        description: "Subject taxon name"
+      - name: taxon_id
+        description: "Subject taxon identifier (compact txn:...)"
+      - name: name_variant_id
+        description: "Name variant identifier (var:...)"
+      - name: opinion_status
+        description: "Relationship asserted (e.g. belongs to, subjective synonym of)"
+      - name: parent_taxon_name
+        description: "Parent name as stated in the opinion"
+      - name: parent_taxon_id
+        description: "Parent taxon identifier"
+      - name: spelling_reason
+        description: "Reason for spelling / naming treatment"
+      - name: opinion_author
+        description: "Author(s) of the opinion"
+      - name: opinion_publication_year
+        description: "Year of the opinion"
+      - name: reference_id
+        description: "Source reference (ref:...)"
+      - name: _dbt_loaded_at
+        description: "dbt run timestamp"

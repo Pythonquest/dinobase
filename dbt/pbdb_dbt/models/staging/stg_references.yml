@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_references
+    description: "Bibliographic references for PBDB records (join on reference_id from occurrences, collections, taxa, opinions)"
+    columns:
+      - name: reference_id
+        description: "PBDB reference identifier (ref:...)"
+        tests:
+          - not_null
+          - unique
+      - name: publication_type
+        description: "Publication type (journal article, book, etc.)"
+      - name: reference_title
+        description: "Title of the reference"
+      - name: publication_year
+        description: "Publication year"
+      - name: author1_first_initial
+        description: "First author initials"
+      - name: author1_last_name
+        description: "First author surname"
+      - name: publication_name
+        description: "Journal or series title"
+      - name: volume
+        description: "Volume"
+      - name: page_first
+        description: "First page"
+      - name: page_last
+        description: "Last page"
+      - name: language
+        description: "Language"
+      - name: _dbt_loaded_at
+        description: "dbt run timestamp"

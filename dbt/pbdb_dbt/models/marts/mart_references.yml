@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: mart_references
+    description: >
+      Bibliographic reference dimension. Join to occurrences, collections, taxa, and opinion marts on reference_id.
+    columns:
+      - name: reference_id
+        description: "PBDB reference key (ref:...)"
+        tests:
+          - unique
+          - not_null
+      - name: reference_title
+        description: "Title of the work"
+      - name: publication_year
+        description: "Year of publication"
+      - name: author1_last_name
+        description: "Primary author surname"
+      - name: publication_name
+        description: "Journal or monograph series title"
+      - name: _dbt_loaded_at
+        description: "Staging load timestamp"
